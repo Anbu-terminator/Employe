@@ -3,15 +3,23 @@ import { type Employee } from "@shared/schema";
 import { GSAPWrapper } from "@/components/gsap-wrapper";
 import { EmployeeForm } from "@/components/employee-form";
 import { EmployeeCards } from "@/components/employee-cards";
-import { useSplitText } from "@/hooks/use-gsap";
-import { CheckCircle } from "lucide-react";
+import { useSplitText, useMagneticButton } from "@/hooks/use-gsap";
+import { useAuth } from "@/hooks/use-auth";
+import { Button } from "@/components/ui/button";
+import { CheckCircle, LogOut } from "lucide-react";
 
 export default function Dashboard() {
   const titleRef = useSplitText("CRYS TECH EMPLOYEE DASHBOARD");
+  const logoutButtonRef = useMagneticButton();
+  const { logout } = useAuth();
   
   const { data: employees } = useQuery<Employee[]>({
     queryKey: ["/api/employees"],
   });
+
+  const handleLogout = () => {
+    logout();
+  };
 
   return (
     <GSAPWrapper>
@@ -26,11 +34,23 @@ export default function Dashboard() {
               </div>
               <h1 ref={titleRef} className="text-2xl font-bold split-text" />
             </div>
-            <div className="text-sm text-gray-400">
-              <span className="text-primary font-semibold">
-                {employees?.length || 0}
-              </span>{" "}
-              Employees Registered
+            <div className="flex items-center space-x-4">
+              <div className="text-sm text-gray-400">
+                <span className="text-primary font-semibold">
+                  {employees?.length || 0}
+                </span>{" "}
+                Employees Registered
+              </div>
+              <Button
+                ref={logoutButtonRef}
+                onClick={handleLogout}
+                variant="outline"
+                size="sm"
+                className="bg-white/10 border-white/20 hover:bg-red-500/20 hover:border-red-500/30 text-white magnetic-button"
+              >
+                <LogOut className="w-4 h-4 mr-2" />
+                Logout
+              </Button>
             </div>
           </div>
         </div>
